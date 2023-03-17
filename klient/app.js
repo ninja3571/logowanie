@@ -1,31 +1,27 @@
-function checkLogin(){
+async function getUser(){
     const login = document.getElementById("login").value
     const passworld = document.getElementById("passworld").value
 
-    const data = await fetch("http://localhost.3000")
+    const data = await fetch(`http://localhost:3000/get/${login}/${passworld}`);
+    const json = await data.json()
+    console.log(json)
 
-    const user = "admin"
-    const adminPass ="admin"
-
-    if(login==user && passworld==adminPass){
-        console.log("zalogowano")
-        localStorage.setItem('login','admin')
-        window.location.href="admin.html"
-    }
-     else{ 
-        console.log("błędny login lub hasło")
-        alert("Błędny login lub hasło")
-        localStorage.setItem('login','false')
+    if(json.user != undefined){
+        localStorage.setItem("upr", JSON.stringify(json))
+    } else{
+        localStorage.setItem("upr","false")
     }
 }
 
-function checkAdmin(){
-    const admin = localStorage.getItem("login")
+function checkUser(){
+    const user = JSON.parse(localStorage.getItem("upr"))
 
-    if(window.location.href=="admin.html"){
-        if(admin!="admin"){
-            window.location.href="login.html"
-        }
-    }    
+    const url = window.location.href
+
+    if(user.upr != "admin" && url.includes("admin.html")){
+        window.location.href = "index.html"
+    }
+    if((user.upr != "user" || user.upr != "admin") && url.includes("user.html")){
+        window.location.href = "index.html"
+    }
 }
-
